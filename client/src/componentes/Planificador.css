@@ -1,0 +1,178 @@
+*{
+    outline:0;
+    padding:0;
+    margin: 0;
+    border: 0;
+    list-style: none;
+    font-family: 'Merriweather', serif;
+}
+.main{
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-image: url(./imagenes/flowers1.jpg);/*para ir a carpeta afuera es con ../*/
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;/*abarca todo el contenedor, a comoda a la franja*/
+    background-position: center;
+    padding: 100px 10%;
+}
+header{
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(1, 21, 38, 0.6);
+    padding: 10px;
+    gap: 20px;
+    border-radius: 10px;
+}
+nav{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    background-color: rgba(1, 52, 64, 0.5);
+    border-radius: 10px;
+}
+.logout{
+    flex: 0.2;
+    display: flex;
+    margin-right: 10px;
+}
+.marca{
+    display: flex;
+    align-items: center;
+    flex: 1.8;
+    color: #90b8b8;
+}
+.icono{
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.nombre{
+    font-weight: bold;
+    font-size: 40px;
+}
+.logout, button{
+    font-weight: bold;
+    font-size: 15px;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 10px;
+    background-color: #011526;
+    color:beige;
+    cursor: pointer;
+}
+
+.habitos{
+    font-weight: bold;
+    font-size: 25px;
+    justify-content: center;
+    padding: 5px;
+    text-decoration: none;
+    width: 25%;
+    display: flex;
+    border-radius: 10px;
+    background-color: #011526;
+    color: beige;
+}
+.calendar-container {
+    display: flex;
+    width: 80%;
+    background-color: rgba(1, 21, 38, 0.6);
+    gap: 20px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    padding: 10px;
+    flex-direction: column;
+}
+
+.calendar-container header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    gap: 20px;
+    justify-content: center;
+    font-weight: bold;
+    background-color: rgba(1, 52, 64, 0.5);
+    color: bisque;
+}
+
+header .calendar-navigation {
+    display: flex;
+}
+
+header .calendar-navigation button {
+    height: 40px;
+    width: 40px;
+    margin: 0 1px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 38px;
+    border-radius: 50%;
+    user-select: none;
+    background-color: #BEBFBD;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    color: rgb(155, 39, 155);
+    font-weight:4000;
+}
+
+.calendar-navigation button:last-child {
+    margin-right: -10px;
+}
+
+header .calendar-navigation button:hover {
+    background: #f2f2f2;
+}
+
+header .calendar-current-date {
+    font-weight: bold;
+    font-size: 1.50rem;
+}
+
+.calendar-body {
+    padding: 20px;
+    background-color: rgba(1, 52, 64, 0.5);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-body ul {
+    flex-wrap: wrap;
+    display: flex;
+    text-align: center;
+}
+
+.calendar-body .calendar-dates {
+    margin-bottom: 20px;
+}
+th{
+    padding: 10px;
+}
+td{
+    padding: 10px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: white;
+}
+.dias {
+    width: calc(100% / 7);
+    font-size: 2rem;
+    color: bisque;
+    padding: 2px;
+}
+.red{
+    color:white;
+}

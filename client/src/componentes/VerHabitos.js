@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from 'axios';
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import './Ver.css';
 
 const VerHabitos = () =>{
     const {ide} = useParams();
@@ -9,20 +10,29 @@ const VerHabitos = () =>{
     const [arrayChecks, setArrayChecks] = useState([]);
     const [arrayNames, setArrayNames] = useState([]);
     const [arrayId, setArrayId] = useState([]);
+    const [cont, setCont] = useState(0);
+    const [arrayIdExportar, setArrayIdExportar] = useState([]);
+    const [arrayChecksExportar, setArrayChecksExportar] = useState([]);
+
+    const navigate = useNavigate();
 
     var habitos = [];
     var aChecks=[];
     var aNames=[];
     var aId=[];
     var identificadores = [];
-            //axios.put("http://localhost:8000/api/habitos/"+identificador,{
-            //    check,
-            //})
-            //.then(res => console.log(res))
-            //.catch(err=> console.log(err));
+    var contador=0;
+    var id = "";
+    var largo = arrayId.length;
+    var aNames2 = [];
+    var identificadores2 = [];
+    var aChecks2 = [];
+    var aId2 = [];
+    var idExportar = [];
+    var checksExportar = [];
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/habitos")
+        axios.get("http://localhost:8000/api/habitos", {withCredentials:true})
         .then(res => {setLosHabitos(res.data)})
         .catch(err => console.log(err));
         console.log("primero primera vez")
@@ -46,54 +56,120 @@ const VerHabitos = () =>{
             aNames=[...aNames,habitos[i].nombre];
         }
         setArrayNames(aNames);
+        for(let i = 0; i<losHabitos.length;i++){
+            if(habitos[i].identificador===ide){
+                idExportar=[...idExportar,habitos[i]._id]
+            }
+        }
+        setArrayIdExportar(idExportar);
+        for(let i = 0; i<losHabitos.length;i++){
+            if(habitos[i].identificador===ide){
+                checksExportar=[...checksExportar,habitos[i].check]
+            }
+        }
+        setArrayChecksExportar(checksExportar);
         //Hago array con valores de check con la cantidad de objetos que imprimo//
         //Hago array con valores de _id con la cantidad de objetos que imprimo//
         //Hago array con valores con nombres con la cantidad de objetos que imprimo//
-    },[arrayNames])
+    },[losHabitos])
+
     useEffect(()=>{
-        setArrayChecks(arrayChecks);
-    }, [arrayChecks])
+        console.log("cambió los checks")
+    }, [cont])
 
     const cambiarCheck = (e,index) =>{
-        e.preventDefault();
         aChecks=arrayChecks;
         console.log("inicial");
         console.log(aChecks[index]);
-        if(aChecks[index]===true){
-            aChecks[index]=false;
-            setArrayChecks(aChecks);
-        }
-        else{
-            aChecks[index]=true;
-            setArrayChecks(aChecks);
-        }
-        console.log("final");
+        aChecks[index] = !aChecks[index];
+        setArrayChecks(aChecks);
         console.log(aChecks[index]);
+        aId=arrayId;
+        idExportar=arrayIdExportar;
+        checksExportar=arrayChecksExportar;
+        for(let i=0;i<idExportar.length;i++){
+            if(idExportar[i]===aId[index]){
+                checksExportar[i]=aChecks[index];
+            }
+        }
+        setArrayChecksExportar(checksExportar);
+        contador=cont;
+        contador++;
+        setCont(contador);
+        console.log(contador);
+        }
+
+        const actualizar = (e) =>{
+            console.log(arrayIdExportar);
+            console.log(arrayChecksExportar);
+            e.preventDefault();
+            axios.put("http://localhost:8000/api/habitos/",{
+                arrayIdExportar,
+                arrayChecksExportar
+            }, {withCredentials: true})
+            .then(res => navigate("/"))
+            .catch(err=> console.log(err));
+        }
+
+        const borrar = index => {
+            id = arrayId[index];
+            largo = arrayId.length;
+            aNames = [];
+            identificadores = [];
+            aChecks = [];
+            aId = [];
+            aNames2 = arrayNames;
+            identificadores2 = arrayIdentificadores;
+            aChecks2 = arrayChecks;
+            aId2 = arrayId;
+            axios.delete("http://localhost:8000/api/habitos/"+id, {withCredentials:true})
+            .then(res =>{
+                for (let i=0; i<largo; i++){
+                    if(i!==index){
+                        aNames=[...aNames,aNames2[i]];
+                        identificadores=[...identificadores,identificadores2[i]];
+                        aChecks = [...aChecks,aChecks2[i]];
+                        aId = [...aId, aId2[i]]
+                    }
+                    else{}
+                }
+                setArrayNames(aNames);
+                setArrayIdentificadores(identificadores);
+                setArrayChecks(aChecks);
+                setArrayId(aId);
+            })
+            .catch(err=>console.log(err))
         }
     return(
-        <div>
-            <div><Link to = "/">Calendario</Link></div>
-            <form>
-                <div>
+        <div className="verlos">
+            <Link to = "/" className="irCalendario">Go to Calendar</Link>
+            <form onSubmit={actualizar}>
+                <div className="formularioActualizar">
+                <div className="desplegarhabitos">
                     {arrayNames.map((nombre,index)=>(
                         <div key={index}>
                             {
                             ide===arrayIdentificadores[index]?
-                            <div>
-                                <h1>{nombre}</h1>
-                                <div>
-                                <label htmlFor='check'>estado</label>
-                                <input type="checkbox" id='check' name="check" checked={arrayChecks[index]} onChange={e => cambiarCheck(e, index)}/>
+                            <div className="cadauno">
+                                <div className="losnombrecitos">
+                                    <h1 className="habitomodificar">{nombre}</h1>
+                                    <div>
+                                    <input type="checkbox" id={`check${index}`} name={`check${index}`} checked={arrayChecks[index]} onChange={(e) => cambiarCheck(e, index)}/>
+                                    <label htmlFor={`check${index}`} className="checkear">State</label>
+                                    </div>
                                 </div>
+                                <button onClick={() => borrar(index)} className="erase">Delete</button>
                             </div>
                             :null
                             }
                         </div>
                     ))}
                 </div>
-                <input type='submit' value="Guardar"/>
+                <input type='submit' value="Update" className="seActualiza"/>
+                </div>
             </form>
         </div>
     )
 }
 export default VerHabitos;
+

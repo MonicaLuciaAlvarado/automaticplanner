@@ -1,6 +1,9 @@
+import './Planificador.css';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
+import ButtonLogout from './ButtonLogout';
+import icono from './imagenes/icono.png';
 
 const PlanificadorActual = () => {
     const [actualDate, setActualDate] = useState(new Date());
@@ -24,14 +27,21 @@ const PlanificadorActual = () => {
     const [habitos, setHabitos] = useState([]);
     const [arrayHabitos, setArrayHabitos] = useState([]);
     const [idCalendario, setIdCalendario] = useState([]);
+
+    const navigate = useNavigate();
+
         
     useEffect(() => {
-        axios.get("http://localhost:8000/api/habitos")
+        axios.get("http://localhost:8000/api/habitos", {withCredentials: true})
         .then( res => {
             setHabitos(res.data)
         })
-        .catch(err => console.log(err));
-    }, [habitos]);
+        .catch(err => {
+            if(err.response.status === 401){
+                navigate("/login");
+            }
+        });
+    }, []);
 
     useEffect(() =>{
         setActualDate(new Date());
@@ -72,6 +82,7 @@ const PlanificadorActual = () => {
         for (let i = 0; i < lastdate; i++) {
             thisMonthHabits[i] = false;
             setArrayHabitos(thisMonthHabits);
+            console.log(arrayHabitos);
         }
         for (let i = 0; i < lastdate; i++) {
             arrayCal[i] = "";
@@ -100,7 +111,6 @@ const PlanificadorActual = () => {
                         idCal="0"+thisMonth[i]+mesActual;
                         if(idCal===habitos[j].identificador){
                             thisMonthHabits[i] = true;
-                            setArrayHabitos(thisMonthHabits);
                         }
                     }
                     else{
@@ -108,11 +118,11 @@ const PlanificadorActual = () => {
                         idCal=thisMonth[i].toString()+mesActual.toString();
                         if(idCal===habitos[j].identificador){
                             thisMonthHabits[i] = true;
-                            setArrayHabitos(thisMonthHabits);
                         }
                     }
                 }
             }
+            setArrayHabitos(thisMonthHabits);
         }
         // Loop to add the first dates of the next month
         if((42-lastMonth.length-thisMonth.length)>=8){
@@ -305,41 +315,31 @@ const PlanificadorActual = () => {
         }
     }
     return(
-        <div>
+        <div className='main'>
             <header>
-            <nav>
-            <div className="logotipo">
-                <img src={"https://th.bing.com/th/id/OIG.ySAcgKVWcSuZkqsa5Z8F?w=270&h=270&c=6&r=0&o=5&dpr=1.3&pid=ImgGn"} alt="logo" className="icono"/>
-                <p className="nombre">Mi Planificador Personal</p>
-            </div>
-            <ul className="menu">
-                <li>
-                    <Link to ="/">Mi Perfil</Link>
-                </li>
-                <li>
-                    <Link to ="/">Configuraciones</Link>
-                    </li>
-                <li>
-                    <Link to ="/">Cerrar sesión</Link>
-                </li>
-            </ul>
-            </nav>
-            <div>
-            <Link to={`/habitos/crear`}>Crear hábitos</Link>
-            </div>
+                <nav>
+                <div className="marca">
+                    <img src={icono} alt="logo" className="icono"/>
+                    <p className="nombre">My Personal Planner</p>
+                </div>
+                <div className='logout'>
+                <ButtonLogout></ButtonLogout>
+                </div>
+                </nav>
+                <Link to={`/habitos/crear`} className='habitos'>Create habits</Link>
             </header>
             <div className="calendar-container">
                 <header className="calendar-header">
                     <p className="calendar-current-date">{monthName} {year}</p>
                     <div className="calendar-navigation">
-                        <button id="calendar-prev" className="material-symbols-rounded" onClick={()=>previous()}></button>
-                        <button id="calendar-next" className="material-symbols-rounded" onClick={()=>next()}></button>
+                        <button id="calendar-prev" className="material-symbols-rounded" onClick={()=>previous()}>←</button>
+                        <button id="calendar-next" className="material-symbols-rounded" onClick={()=>next()}>→</button>
                     </div>
                 </header>
                 <div className="calendar-body">
                     <table>
                         <thead className="calendar-weekdays">
-                            <tr>
+                            <tr className='dias'>
                                 <th>Sun</th>
                                 <th>Mon</th>
                                 <th>Tue</th>
@@ -354,33 +354,35 @@ const PlanificadorActual = () => {
                                 calendarDayLastMonth.length<7?
                                 <tr>{calendarDayLastMonth.map((day, index) => (<td key={index}>{day}</td>))}
                                 {sobranPrimeraCol.map((day, index) => (<td key={index}>{day}
-                                {arrayHabitos[day-1]? <Link to={`/mostrar/${idCalendario[day-1]}`}>Ver habitos</Link>:null}
+                                {arrayHabitos[day-1]? <Link className='red' to={`/mostrar/${idCalendario[day-1]}`}><br></br>See habits</Link>:null}
                                 </td>))}
                                 </tr>:
                                 <tr>{calendarDayLastMonth.map((day, index) => (<td key={index}>{day}</td>))}</tr>
                             }
                             <tr>{segunda.map((day, index) => (<td key={index}>{day}
-                            {arrayHabitos[day-1]? <Link to={`/mostrar/${idCalendario[day-1]}`}>Ver habitos</Link>:null}
+                            {arrayHabitos[day-1]? <Link className='red' to={`/mostrar/${idCalendario[day-1]}`}><br></br>See habits</Link>:null}
                             </td>))}</tr>
                             <tr>{tercera.map((day, index) => (<td key={index}>{day}
-                            {arrayHabitos[day-1]? <Link to={`/mostrar/${idCalendario[day-1]}`}>Ver habitos</Link>:null}
+                            {arrayHabitos[day-1]? <Link className='red' to={`/mostrar/${idCalendario[day-1]}`}><br></br>See habits</Link>:null}
                             </td>))}</tr>
-                            <tr>{cuarta.map((day, index) => (<td key={index}>{day}</td>))}</tr>
+                            <tr>{cuarta.map((day, index) => (<td key={index}>{day}
+                            {arrayHabitos[day-1]? <Link className='red' to={`/mostrar/${idCalendario[day-1]}`}><br></br>See habits</Link>:null}
+                            </td>))}</tr>
                             {
                                 pedQuin.length>0?
                                 <tr>{quinta.map((day, index) => (<td key={index}>{day}
-                                {arrayHabitos[day-1]? <Link to={`/mostrar/${idCalendario[day-1]}`}>Ver habitos</Link>:null}                                
+                                {arrayHabitos[day-1]? <Link className='red' to={`/mostrar/${idCalendario[day-1]}`}><br></br>See habits</Link>:null}                                
                                 </td>))}
                                 {pedQuin.map((day, index) => (<td key={index}>{day}</td>))}
                                 </tr>:
                                 <tr>{quinta.map((day, index) => (<td key={index}>{day}
-                                {arrayHabitos[day-1]? <Link to={`/mostrar/${idCalendario[day-1]}`}>Ver habitos</Link>:null}                                
+                                {arrayHabitos[day-1]? <Link className='red' to={`/mostrar/${idCalendario[day-1]}`}><br></br>See habits</Link>:null}                                
                                 </td>))}</tr>
                             }
                             {
                                 pedSex.length>0?
                                 <tr>{pedSex.map((day,index) => (<td key={index}>{day}
-                                {arrayHabitos[day-1]? <Link to={`/mostrar/${idCalendario[day-1]}`}>Ver habitos</Link>:null}                                
+                                {arrayHabitos[day-1]? <Link className='red' to={`/mostrar/${idCalendario[day-1]}`}><br></br>See habits</Link>:null}                                
                                 </td>))}
                                 {calendarDayNextMonth.map((day,index) => (<td key={index}>{day}</td>))}</tr>:
                                 <tr>{sexta.map((day,index)=> (<td key={index}>{day}                            

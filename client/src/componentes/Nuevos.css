@@ -1,0 +1,128 @@
+*{
+    outline:0;
+    padding:0;
+    margin: 0;
+    border: 0;
+    list-style: none;
+    font-family: 'Merriweather', serif;
+}
+.crearlos{
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-image: url(./imagenes/relax.jpg);/*para ir a carpeta afuera es con ../*/
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;/*abarca todo el contenedor, a comoda a la franja*/
+    background-position: center;
+    padding: 100px 10%;
+}
+.encabezadoCrear{
+    display: flex;
+    width: 80%;
+    margin: 0 auto;
+    flex-direction: column;
+    gap: 20px;
+    align-items:baseline;
+}
+.formulario{
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(1, 21, 38, 0.6);
+    padding: 10px;
+    gap: 20px;
+    border-radius: 10px;
+    color:beige;
+
+}
+.nuevosHabitos{
+    display: flex;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 10px;
+    background-color: #011526;
+    color:beige;
+    width: 100%;
+    margin: 0 auto;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.actualizar{
+    font-weight: bold;
+    font-size: 30px;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 10px;
+    background-color: #011526;
+    color:beige;
+}
+
+.volverCalendario{
+    display: flex;
+    justify-content: left;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #011526;
+    color:beige;
+    margin: 0 auto;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+select{
+    font-size: 15px;
+    text-align: center;
+}
+.mes{
+    display: flex;
+}
+.mes, label{
+    font-size: 20px;
+}
+.elegirFechas, label{
+    font-size: 20px;
+}
+
+.dates{
+    text-align: center;
+    font-size: 15px;
+}
+
+.seleDias{
+    font-size: 20px;
+}
+.modificarCrear{
+    font-size: 20px;
+    border-radius: 10px;
+    background-color: #011526;
+    cursor: pointer;
+    padding: 5px;
+}
+.inputs{
+    font-size: 20px;
+}
+.anadirNuevos{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    align-items:center;
+}
+.linea{
+    display: flex;
+    justify-content:space-around;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    font-size: 20px;
+}
+.espacio{
+    font-size: 20px;
+
+}

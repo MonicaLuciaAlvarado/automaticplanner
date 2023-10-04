@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; //useNavigate redirige al usuario
-
+import { useNavigate, Link } from 'react-router-dom'; //useNavigate redirige al usuario
+import './Nuevos.css';
 const CrearHabitos = () =>{
     const [nombres, setNombres] = useState([""]);
     const [prioridades, setPrioridades] = useState([""]);
@@ -27,6 +27,9 @@ const CrearHabitos = () =>{
     const [ultDayMonth, setUltDayMonth] = useState(new Date(ano, mes + 1, 0).getDate());
     const [correr, setCorrer] = useState(0);
     const navigate = useNavigate();
+    const [mesElegir, setMesElegir] = useState("");
+
+    const [errores, setErrores] = useState([]);//errores.ATRIBUTO.message
 
     var mesStringVar = "";
     var ini = "";
@@ -39,8 +42,9 @@ const CrearHabitos = () =>{
     var x =0;
     var diasEx = [];
     var thisMonth = [];
-    var mon = new Date().getMonth();
+    var mon;
     var guardar = 0;
+    var mesEle = "";
     useEffect(() =>{
     }, [mes])
     useEffect(() =>{
@@ -59,168 +63,190 @@ const CrearHabitos = () =>{
                 diasExportar,
                 ano,
                 check
+            },  {withCredentials: true})
+            .then(res => {
+                if(res.status===400){
+                    console.log(res.errors);
+                }
+                else{
+                    navigate("/");
+                }
             })
-            .then(res => navigate("/"))
-            .catch(err => console.log(err));
+            .catch(err => {
+                if (err.response.status === 401) {
+                    navigate("/login")
+                } else {
+                    console.log(err);
+                }
+            });
         }
     }, [correr])
     const guardarVarios = (e) =>{
-            e.preventDefault();
-            //Acá comienza a hacer el array con los días del mes
-            let dayone = new Date(ano, mes, parseInt(inicial[8]+inicial[9])).getDay();
-            let firstdate = inicialDate;
-            let lastdate = finalDate;
-            if (dayone===6){
-                thisMonthDays = [dayone];
+        e.preventDefault();
+        //Acá comienza a hacer el array con los días del mes
+        let dayone = new Date(ano, mes, parseInt(inicial[8]+inicial[9])).getDay();
+        let firstdate = inicialDate;
+        let lastdate = finalDate;
+        thisMonthDays=[dayone];
+        let contador=dayone;
+        for(let i = firstdate; i < lastdate; i++){
+            contador++;
+            if(contador===7){
+                contador=0;
+                thisMonthDays=[...thisMonthDays, contador]
             }
             else{
-                for (let i = dayone; i<=6; i++){
-                    thisMonthDays = [...thisMonthDays, i];
-                    setArrayDiasMes(thisMonthDays);
-                }
+                thisMonthDays=[...thisMonthDays, contador]
             }
-            for (let i = (firstdate+thisMonthDays.length); i <=lastdate; i++) {//Hago un array con los días de la semana
-                for (let j = 0; j<=6; j++){
-                    if(i<=(lastdate+1)){
-                        thisMonthDays = [...thisMonthDays, j];
-                        setArrayDiasMes(thisMonthDays);
-                        i++;
-                    }
-                }
-            }
+        }
+        setArrayDiasMes(thisMonthDays);
+        console.log(thisMonthDays);
             //Acá termina de hacer el array con los días del mes
             //Hace un array con las fechas del mes
-            for (let i = firstdate; i <= lastdate; i++) {//Hago un array con las fechas del mes
-                thisMonth = [...thisMonth, i];
-                setArrayDatesMes(thisMonth);
-            }
+        for (let i = firstdate; i <= lastdate; i++) {//Hago un array con las fechas del mes
+            thisMonth = [...thisMonth, i];
+            setArrayDatesMes(thisMonth);
+        }
             //Termina el array con las fechas del mes
             //Ahora hago el array con las fechas del mes que necesito
-            if (lunes===true){
-                x = 0;
-                for(let i=firstdate; i<=lastdate;i++){
-                    if(thisMonthDays[x]===1){
-                        diasEx=[...diasEx, thisMonth[x]];
-                        setDiasExportar(diasEx);//13 y 20
-                    }
-                    x++;
+        if (lunes===true){
+            x = 0;
+            for(let i=firstdate; i<=lastdate;i++){
+                if(thisMonthDays[x]===1){
+                    diasEx=[...diasEx, thisMonth[x]];
+                    setDiasExportar(diasEx);//13 y 20
                 }
-                x=0;
+                x++;
             }
-            if (martes===true){
-                x = 0;
-                for(let i=firstdate; i<=lastdate;i++){
-                    if(thisMonthDays[x]===2){
-                        diasEx=[...diasEx, thisMonth[x]];
-                        setDiasExportar(diasEx);//13 y 20
-                    }
-                    x++;
+            x=0;
+        }
+        let pruebita = 0;
+        if (martes===true){
+            x = 0;
+            for(let i=firstdate; i<=lastdate;i++){
+                pruebita++;
+                if(thisMonthDays[x]===2){
+                    diasEx=[...diasEx, thisMonth[x]];
+                    setDiasExportar(diasEx);//13 y 20
                 }
-                x=0;
+                x++;
             }
-            if (miercoles===true){
-                x = 0;
-                for(let i=firstdate; i<=lastdate;i++){
-                    if(thisMonthDays[x]===3){
-                        diasEx=[...diasEx, thisMonth[x]];
-                        setDiasExportar(diasEx);//13 y 20
-                    }
-                    x++;
+            x=0;
+        }
+        if (miercoles===true){
+            x = 0;
+            for(let i=firstdate; i<=lastdate;i++){
+                if(thisMonthDays[x]===3){
+                    diasEx=[...diasEx, thisMonth[x]];
+                    setDiasExportar(diasEx);//13 y 20
                 }
-                x=0;
+                x++;
             }
-            if (jueves===true){
-                x = 0;
-                for(let i=firstdate; i<=lastdate;i++){
-                    if(thisMonthDays[x]===4){
-                        diasEx=[...diasEx, thisMonth[x]];
-                        setDiasExportar(diasEx);//13 y 20
-                    }
-                    x++;
+            x=0;
+        }
+        if (jueves===true){
+            x = 0;
+            for(let i=firstdate; i<=lastdate;i++){
+                if(thisMonthDays[x]===4){
+                    diasEx=[...diasEx, thisMonth[x]];
+                    setDiasExportar(diasEx);//13 y 20
                 }
-                x=0;
+                x++;
             }
-            if (viernes===true){
-                x = 0;
-                for(let i=firstdate; i<=lastdate;i++){
-                    if(thisMonthDays[x]===5){
-                        diasEx=[...diasEx, thisMonth[x]];
-                        setDiasExportar(diasEx);//13 y 20
-                    }
-                    x++;
+            x=0;
+        }
+        if (viernes===true){
+            x = 0;
+            for(let i=firstdate; i<=lastdate;i++){
+                if(thisMonthDays[x]===5){
+                    diasEx=[...diasEx, thisMonth[x]];
+                    setDiasExportar(diasEx);//13 y 20
                 }
-                x=0;
+                x++;
             }
-            if (sabado===true){
-                x = 0;
-                for(let i=firstdate; i<=lastdate;i++){
-                    if(thisMonthDays[x]===6){
-                        diasEx=[...diasEx, thisMonth[x]];
-                        setDiasExportar(diasEx);//13 y 20
-                    }
-                    x++;
+            x=0;
+        }
+        if (sabado===true){
+            x = 0;
+            for(let i=firstdate; i<=lastdate;i++){
+                if(thisMonthDays[x]===6){
+                    diasEx=[...diasEx, thisMonth[x]];
+                    setDiasExportar(diasEx);//13 y 20
                 }
-                x=0;
+                x++;
             }
-            if (domingo===true){
-                x = 0;
-                for(let i=firstdate; i<=lastdate;i++){
-                    if(thisMonthDays[x]===0){
-                        diasEx=[...diasEx, thisMonth[x]];
-                        setDiasExportar(diasEx);//13 y 20
-                    }
-                    x++;
+            x=0;
+        }
+        if (domingo===true){
+            x = 0;
+            for(let i=firstdate; i<=lastdate;i++){
+                if(thisMonthDays[x]===0){
+                    diasEx=[...diasEx, thisMonth[x]];
+                    setDiasExportar(diasEx);//13 y 20
                 }
-                x=0;
+                x++;
             }
-            let mon=mes;
-            setMes(mon);
-
-            guardar++;
-            setCorrer(guardar);
-            
-            //acá termino de hacer el array;
+            x=0;
+        }
+        let mon=mes;
+        setMes(mon);
+        guardar++;
+        setCorrer(guardar);
+        //acá termino de hacer el array;
     }
     const setTheMonth =(e)=>{
         mesStringVar = e.target.value;
         if(mesStringVar==="january"){
             mon=0;
+            mesEle="01"
         }
         else if(mesStringVar==="february"){
             mon=1;
+            mesEle="02"
         }
         else if(mesStringVar==="march"){
             mon=2;
+            mesEle="03"
         }
         else if(mesStringVar==="april"){
             mon=3;
+            mesEle="04"
         }
         else if(mesStringVar==="may"){
             mon=4;
+            mesEle="05"
         }
         else if(mesStringVar==="june"){
             mon=5;
+            mesEle="06"
         }
         else if(mesStringVar==="july"){
             mon=6;
+            mesEle="07"
         }
         else if(mesStringVar==="august"){
             mon=7;
+            mesEle="08"
         }
         else if(mesStringVar==="september"){
             mon=8;
+            mesEle="09"
         }
         else if(mesStringVar==="octuber"){
             mon=9;
+            mesEle="10"
         }
         else if(mesStringVar==="november"){
             mon=10;
+            mesEle="11"
         }
         else if(mesStringVar==="december"){
             mon=11;
+            mesEle="12"
         }
         setUltDayMonth(new Date(ano, mon + 1, 0).getDate());
         setMes(mon);
+        setMesElegir(mesEle);
     }
 
     const elDateInicial = (e)=>{
@@ -301,11 +327,18 @@ const CrearHabitos = () =>{
 //setEspacios(arrayEspacios);
 //new Date (2023, 8, 22).getDay() me devuelve 5 porque es viernes el 22 del 9
     return(
-        <div>
-            <h3>Nuevos Habitos</h3>
-            <form onSubmit={guardarVarios}>
-                    <select name= "mes" defaultValue={'DEFAULT'} onChange={setTheMonth}>
-                        <option value="DEFAULT" disabled>Seleccione uno</option>
+        <div className='crearlos'>
+            <div className='encabezadoCrear'>
+                <div className='elVolver'>
+                <Link to = "/" className="volverCalendario">Go to Calendar</Link>
+                </div>
+                <h3 className='nuevosHabitos'>New Habits</h3>
+            </div>
+            <form onSubmit={guardarVarios} className='formulario'>
+                <div className='mes'>
+                    <label>Choose a month: </label>
+                    <select name= "mes" defaultValue={'DEFAULT'} onChange={setTheMonth} className='seleccionador'>
+                        <option value="DEFAULT" disabled>Choose one</option>
                         <option value="january">January</option>
                         <option value="february">February</option>
                         <option value="march">March</option>
@@ -319,16 +352,17 @@ const CrearHabitos = () =>{
                         <option value="november">November</option>
                         <option value="december">December</option>
                     </select>
-                <div>
-                    <label>Fecha inicial: </label>
-                    <input type='date' min={`${ano}-0${mes+1}-01`} max={`${ano}-0${mes+1}-${ultDayMonth}`} name="inicial" value={inicial} onChange={elDateInicial}/>
+                </div>
+                <div className='elegirFechas'>
+                    <label>Initial date: </label>
+                    <input className='dates' type='date' min={`${ano}-${mesElegir}-01`} max={`${ano}-${mesElegir}-${ultDayMonth}`} name="inicial" value={inicial} onChange={elDateInicial}/>
                 </div>
                 <div>
-                    <label>Fecha final: </label>
-                    <input type='date' min={`${ano}-0${mes+1}-01`} max={`${ano}-0${mes+1}-${ultDayMonth}`} name="final" value={final} onChange={elDateFinal}/>
+                    <label>Final date: </label>
+                    <input className='dates' type='date' min={`${ano}-${mesElegir}-01`} max={`${ano}-${mesElegir}-${ultDayMonth}`} name="final" value={final} onChange={elDateFinal}/>
                 </div>
-                <div>
-                    <label>Días</label>
+                <div className='seleDias'>
+                    <label>Days</label>
                     <div>
                     <input type="checkbox" id='domingo' name="domingo" checked={domingo} onChange={e => setDomingo(e.target.checked)}/>
                     <label htmlFor='domingo'>0. Sunday</label>
@@ -358,21 +392,27 @@ const CrearHabitos = () =>{
                     <label htmlFor='sabado'>6. Saturday</label>
                     </div>
                 </div>
-                <button type= "button" onClick={() => masCant()}>Add more habits</button>
-                <button type= "button" onClick={() => menCant()}>Delete latest habit</button>
-                <button type= "button" onClick={() => deleteCant()}>Delete all habits</button>
+                <button className='modificarCrear' type= "button" onClick={() => masCant()}>Add more habits</button>
+                <button className='modificarCrear' type= "button" onClick={() => menCant()}>Delete latest habit</button>
+                <button className='modificarCrear' type= "button" onClick={() => deleteCant()}>Delete all habits</button>
+                <div className='anadirNuevos'>
                 {
                     espacios.map((espacio,index)=>(
-                        <div key={index}>
-                        <label>{`Task ${espacio+1}:`}</label>
-                        <input type= 'text' name= {`task ${espacio+1}`} onChange={e => agregarName(e.target.value,espacio)}></input>
-                        <label>{`Prioridad ${espacio+1}:`}</label>
-                        <input type= 'text' name= {`prioridad ${espacio+1}`} onChange={e => agregarPrioridad(e.target.value,espacio)}></input>
+                        <div className='linea' key={index}>
+                            <div className='ingresarHabitoPrioridad'>
+                                <label className='inputs'>{`Task ${espacio+1}:`}</label>
+                                <input className='espacio' type= 'text' name= {`task ${espacio+1}`} onChange={e => agregarName(e.target.value,espacio)}></input>
+                            </div>
+                            <div className='ingresarHabitoPrioridad'>
+                                <label className='inputs'>{`Priority ${espacio+1}:`}</label>
+                                <input className='espacio' type= 'text' name= {`prioridad ${espacio+1}`} onChange={e => agregarPrioridad(e.target.value,espacio)}></input>
+                            </div>
                         </div>//hacer una función que recibe espacio
                         //()=> borrarProducto(producto._id)
                     ))
                 }
-                <input type='submit' value="Guardar"/>
+                </div>
+                <input type='submit' value="Guardar" className='actualizar'/>
             </form>
         </div>
     )

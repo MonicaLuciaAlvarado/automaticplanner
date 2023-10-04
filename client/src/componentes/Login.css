@@ -1,0 +1,68 @@
+*{
+    outline:0;
+    padding:0;
+    margin: 0;
+    border: 0;
+    list-style: none;
+    font-family: 'Merriweather', serif;
+}
+.mainLogin{
+        width: 80%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: row;
+        justify-content:left;
+        gap: 20px;
+        background-image: url(./imagenes/j-lee-0lL6Sox7n1Y-unsplash.jpg);/*para ir a carpeta afuera es con ../*/
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;/*abarca todo el contenedor, a comoda a la franja*/
+        background-position: center;
+        padding: 100px 10%;
+}
+.registro{
+    flex:1;
+    display:flex;
+    gap:15px;
+    flex-direction: column;
+}
+.login{
+    flex:1;
+    display:flex;
+    gap:15px;
+    flex-direction: column;
+}
+.llenar{
+    display:flex;
+    gap:15px;
+    flex-direction: column;
+}
+.tituloReg{
+    color: #011526;
+    font-weight: bold;
+    font-size: 20px;
+}
+.inputsReg{
+    width: 100%;
+    display: flex;
+}
+.escribir{
+    flex:1.3;
+}
+.nombreRegistro{
+    flex:0.7;
+    color: #011526;
+    display: flex;
+    justify-content: center;
+}
+.entrar{
+    font-size: 20px;
+    background-color: #011526;
+    color:beige;
+    margin: 0 auto;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+}

@@ -27,6 +27,9 @@ const EsquemaHabito = new mongoose.Schema({
     },
     identificador: {
         type: String
+    },
+    creator:{
+        type: String
     }
 }, {timestamps: true, versionKey: false});
 
