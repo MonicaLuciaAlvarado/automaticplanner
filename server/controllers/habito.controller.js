@@ -19,12 +19,13 @@ module.exports.create_habito = (req,res) =>{//acá hago el loop para hacer vario
     var objeto = {};
     var ano = req.body.ano;
     var check = req.body.check;
-    var errors = [];
+    var todosErrors = [];
+    var contador = 0;
     var creator = "";
+    var nuevaLista = false;
     console.log("backend");
     mes = req.body.mes;
     usertoken_decoded = jwt.verify(req.cookies.usertoken, secret_key);
-    console.log(usertoken_decoded);
     for(let i = 0; i<req.body.diasExportar.length;i++){
         dia = req.body.diasExportar[i];
         if(dia<10){
@@ -34,22 +35,43 @@ module.exports.create_habito = (req,res) =>{//acá hago el loop para hacer vario
             diaString= dia.toString();
         }
         identificador = diaString+mes.toString();
-        console.log(identificador);
         for(let j = 0; j<req.body.nombres.length;j++){
             nombre = req.body.nombres[j];
+            console.log("los nombres son:");
+            console.log(typeof(dia));
             prioridad = req.body.prioridades[j];
             objeto = {nombre,prioridad,mes,dia,ano,check,identificador,creator};
             objeto.creator = usertoken_decoded._id;
-            console.log("Lo que debería de guardar");
-            console.log(objeto);
-            Habito.create(objeto)
-            .then(habito => {console.log(habito)})
-            .catch(err =>{
-                res.status(400).json(err);
-            })
+            if(req.body.nombres[j]!=""){
+                todosErrors[contador]="no";
+            }
+            else{
+                todosErrors[contador]="The name is obligatory";
+                nuevaLista=true;
+            }
+            contador++;
+            if(todosErrors.length>=1){
+                Habito.create(objeto)
+                .then(habito => {console.log(habito)})
+                .catch(err =>{
+                    console.log(err);
+    //              errors[j]=err.response.data.errors;
+    //              res.status(400).json(err);
+                })
+            }
         }
     }
-    res.json("Habitos guardados");
+    if(nuevaLista===true){
+        console.log("los errores son: ");
+        console.log(todosErrors);
+        res.status(400).json(todosErrors);
+    }
+    else{
+        console.log("los errores son: ");
+        console.log(todosErrors);
+        console.log("Habitos guardados");
+        res.json("Habitos guardados");
+    }
     }
 
 module.exports.get_habito = (req,res) => {
@@ -64,8 +86,6 @@ module.exports.update_habito = (req,res) =>{
     for(let i = 0; i<req.body.arrayIdExportar.length; i++){
         check.check = req.body.arrayChecksExportar[i];
         id = req.body.arrayIdExportar[i];
-        console.log("Lo que debería de guardar");
-        console.log(check);
         Habito.findByIdAndUpdate({_id: id}, check, {new:true}, {runValidators:true})
         .then(habito => console.log(habito))
         .catch(err => {res.status(400).json(err)});

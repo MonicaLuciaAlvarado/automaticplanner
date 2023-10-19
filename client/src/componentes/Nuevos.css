@@ -124,5 +124,8 @@ select{
 }
 .espacio{
     font-size: 20px;
+}
 
+.validation{
+    color: red;
 }

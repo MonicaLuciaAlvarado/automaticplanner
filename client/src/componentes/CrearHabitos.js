@@ -29,7 +29,7 @@ const CrearHabitos = () =>{
     const navigate = useNavigate();
     const [mesElegir, setMesElegir] = useState("");
 
-    const [errores, setErrores] = useState([]);//errores.ATRIBUTO.message
+    const [errores, setErrores] = useState({});//errores.ATRIBUTO.message
 
     var mesStringVar = "";
     var ini = "";
@@ -76,7 +76,8 @@ const CrearHabitos = () =>{
                 if (err.response.status === 401) {
                     navigate("/login")
                 } else {
-                    console.log(err);
+                    console.log(err.response.data);
+                    setErrores(err.response.data);
                 }
             });
         }
@@ -353,14 +354,17 @@ const CrearHabitos = () =>{
                         <option value="december">December</option>
                     </select>
                 </div>
+                { mes!= null? null :<p className='validation'>Debe de seleccionar el mes donde añadirá los hábitos</p>}
                 <div className='elegirFechas'>
                     <label>Initial date: </label>
                     <input className='dates' type='date' min={`${ano}-${mesElegir}-01`} max={`${ano}-${mesElegir}-${ultDayMonth}`} name="inicial" value={inicial} onChange={elDateInicial}/>
                 </div>
+                { inicial!= null? null :<p className='validation'>Debe de seleccionar la fecha inicial del lapso donde se añadirán los hábitos</p>}
                 <div>
                     <label>Final date: </label>
                     <input className='dates' type='date' min={`${ano}-${mesElegir}-01`} max={`${ano}-${mesElegir}-${ultDayMonth}`} name="final" value={final} onChange={elDateFinal}/>
                 </div>
+                { final!= null? null :<p className='validation'>Debe de seleccionar la fecha final del lapso donde se añadirán los hábitos</p>}
                 <div className='seleDias'>
                     <label>Days</label>
                     <div>
@@ -392,6 +396,7 @@ const CrearHabitos = () =>{
                     <label htmlFor='sabado'>6. Saturday</label>
                     </div>
                 </div>
+                { lunes===false & martes===false & miercoles===false & jueves==false &viernes==false & sabado===false & domingo===false? <p className='validation'>Debe de seleccionar los días de la semana a los cuales se añadirán los hábitos en el lapso elegido</p> : null}
                 <button className='modificarCrear' type= "button" onClick={() => masCant()}>Add more habits</button>
                 <button className='modificarCrear' type= "button" onClick={() => menCant()}>Delete latest habit</button>
                 <button className='modificarCrear' type= "button" onClick={() => deleteCant()}>Delete all habits</button>
@@ -402,6 +407,7 @@ const CrearHabitos = () =>{
                             <div className='ingresarHabitoPrioridad'>
                                 <label className='inputs'>{`Task ${espacio+1}:`}</label>
                                 <input className='espacio' type= 'text' name= {`task ${espacio+1}`} onChange={e => agregarName(e.target.value,espacio)}></input>
+                                {errores[index] != "no"? <p className='validation'>{errores[index]}</p>:null}
                             </div>
                             <div className='ingresarHabitoPrioridad'>
                                 <label className='inputs'>{`Priority ${espacio+1}:`}</label>
