@@ -27,6 +27,18 @@ module.exports.create_habito = (req,res) =>{//acá hago el loop para hacer vario
     mes = req.body.mes;
     usertoken_decoded = jwt.verify(req.cookies.usertoken, secret_key);
     for(let i = 0; i<req.body.diasExportar.length;i++){
+        for(let j = 0; j<req.body.nombres.length;j++){
+            if(req.body.nombres[j]!=""){
+                todosErrors[contador]="no";
+            }
+            else{
+                todosErrors[contador]="The name is obligatory";
+                nuevaLista=true;
+            }
+            contador++;
+        }
+    }
+    for(let i = 0; i<req.body.diasExportar.length;i++){
         dia = req.body.diasExportar[i];
         if(dia<10){
             diaString= "0"+dia.toString();
@@ -42,15 +54,7 @@ module.exports.create_habito = (req,res) =>{//acá hago el loop para hacer vario
             prioridad = req.body.prioridades[j];
             objeto = {nombre,prioridad,mes,dia,ano,check,identificador,creator};
             objeto.creator = usertoken_decoded._id;
-            if(req.body.nombres[j]!=""){
-                todosErrors[contador]="no";
-            }
-            else{
-                todosErrors[contador]="The name is obligatory";
-                nuevaLista=true;
-            }
-            contador++;
-            if(todosErrors.length>=1){
+            if(nuevaLista===false){
                 Habito.create(objeto)
                 .then(habito => {console.log(habito)})
                 .catch(err =>{
