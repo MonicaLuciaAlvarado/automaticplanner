@@ -20,59 +20,92 @@ module.exports.create_habito = (req,res) =>{//acá hago el loop para hacer vario
     var ano = req.body.ano;
     var check = req.body.check;
     var todosErrors = [];
+    var errorDays= "no";
+    var errorMonth="no";
     var contador = 0;
     var creator = "";
     var nuevaLista = false;
-    console.log("backend");
     mes = req.body.mes;
     usertoken_decoded = jwt.verify(req.cookies.usertoken, secret_key);
-    for(let i = 0; i<req.body.diasExportar.length;i++){
-        for(let j = 0; j<req.body.nombres.length;j++){
-            if(req.body.nombres[j]!=""){
-                todosErrors[contador]="no";
+    if (mes===undefined){
+        nuevaLista=true;
+        errorMonth="The month is obligatory";
+            for(let j = 0; j<req.body.nombres.length;j++){
+                if(req.body.nombres[j]!=""){
+                    todosErrors[contador]="no";
+                }
+                else{
+                    todosErrors[contador]="The name is obligatory";
+                    nuevaLista=true;
+                }
+                contador++;
             }
-            else{
-                todosErrors[contador]="The name is obligatory";
-                nuevaLista=true;
-            }
-            contador++;
+        if(req.body.diasExportar.length===0){
+            errorDays="You must create a date by selecting the month, adding the incial, final date and days of the week";
         }
     }
-    for(let i = 0; i<req.body.diasExportar.length;i++){
-        dia = req.body.diasExportar[i];
-        if(dia<10){
-            diaString= "0"+dia.toString();
-        }
-        else{
-            diaString= dia.toString();
-        }
-        identificador = diaString+mes.toString();
-        for(let j = 0; j<req.body.nombres.length;j++){
-            nombre = req.body.nombres[j];
-            console.log("los nombres son:");
-            console.log(typeof(dia));
-            prioridad = req.body.prioridades[j];
-            objeto = {nombre,prioridad,mes,dia,ano,check,identificador,creator};
-            objeto.creator = usertoken_decoded._id;
-            if(nuevaLista===false){
-                Habito.create(objeto)
-                .then(habito => {console.log(habito)})
-                .catch(err =>{
-                    console.log(err);
-    //              errors[j]=err.response.data.errors;
-    //              res.status(400).json(err);
-                })
+    else if(req.body.diasExportar.length===0){
+        nuevaLista=true;
+        errorDays="You must create a date by selecting a month, adding the incial, final date and days of the week";
+            for(let j = 0; j<req.body.nombres.length;j++){
+                if(req.body.nombres[j]!=""){
+                    todosErrors[contador]="no";
+                }
+                else{
+                    todosErrors[contador]="The name is obligatory";
+                    nuevaLista=true;
+                }
+                contador++;
             }
-        }
-    }
-    if(nuevaLista===true){
-        console.log("los errores son: ");
-        console.log(todosErrors);
-        res.status(400).json(todosErrors);
     }
     else{
+        for(let i = 0; i<req.body.diasExportar.length;i++){
+            for(let j = 0; j<req.body.nombres.length;j++){
+                if(req.body.nombres[j]!=""){
+                    todosErrors[contador]="no";
+                }
+                else{
+                    todosErrors[contador]="The name is obligatory";
+                    nuevaLista=true;
+                }
+                contador++;
+            }
+        }
+        for(let i = 0; i<req.body.diasExportar.length;i++){
+            dia = req.body.diasExportar[i];
+            if(dia<10){
+                diaString= "0"+dia.toString();
+            }
+            else{
+                diaString= dia.toString();
+            }
+            identificador = diaString+mes.toString();
+            for(let j = 0; j<req.body.nombres.length;j++){
+                nombre = req.body.nombres[j];
+                console.log("los nombres son:");
+                console.log(typeof(dia));
+                prioridad = req.body.prioridades[j];
+                objeto = {nombre,prioridad,mes,dia,ano,check,identificador,creator};
+                objeto.creator = usertoken_decoded._id;
+                if(nuevaLista===false){
+                    Habito.create(objeto)
+                    .then(habito => {console.log(habito)})
+                    .catch(err =>{
+                        console.log(err);
+        //              errors[j]=err.response.data.errors;
+        //              res.status(400).json(err);
+                    })
+                }
+            }
+        }
+    }
+    var conjuntoErrores = {nombres:todosErrors,mes:errorMonth,dias:errorDays};
+    if(nuevaLista===true){
         console.log("los errores son: ");
-        console.log(todosErrors);
+        console.log(conjuntoErrores);
+        res.status(400).json(conjuntoErrores);
+    }
+    else{
         console.log("Habitos guardados");
         res.json("Habitos guardados");
     }

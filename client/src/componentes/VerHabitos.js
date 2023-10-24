@@ -13,6 +13,7 @@ const VerHabitos = () =>{
     const [cont, setCont] = useState(0);
     const [arrayIdExportar, setArrayIdExportar] = useState([]);
     const [arrayChecksExportar, setArrayChecksExportar] = useState([]);
+    const [idBorrar, setIdBorrar] = useState([]);
 
     const navigate = useNavigate();
 
@@ -30,10 +31,12 @@ const VerHabitos = () =>{
     var aId2 = [];
     var idExportar = [];
     var checksExportar = [];
+    var idBo = [];
 
     useEffect(() => {
         axios.get("http://localhost:8000/api/habitos", {withCredentials:true})
-        .then(res => {setLosHabitos(res.data)})
+        .then(res => {setLosHabitos(res.data);
+        })
         .catch(err => console.log(err));
         console.log("primero primera vez")
     },[]);
@@ -68,6 +71,13 @@ const VerHabitos = () =>{
             }
         }
         setArrayChecksExportar(checksExportar);
+
+        for(let i = 0; i<losHabitos.length;i++){
+            if(ide===identificadores[i]){
+                idBo=[...idBo,habitos[i]._id];
+            }
+        }
+        setIdBorrar(idBo);
         //Hago array con valores de check con la cantidad de objetos que imprimo//
         //Hago array con valores de _id con la cantidad de objetos que imprimo//
         //Hago array con valores con nombres con la cantidad de objetos que imprimo//
@@ -112,33 +122,38 @@ const VerHabitos = () =>{
         }
 
         const borrar = index => {
-            id = arrayId[index];
-            largo = arrayId.length;
-            aNames = [];
-            identificadores = [];
-            aChecks = [];
-            aId = [];
-            aNames2 = arrayNames;
-            identificadores2 = arrayIdentificadores;
-            aChecks2 = arrayChecks;
-            aId2 = arrayId;
-            axios.delete("http://localhost:8000/api/habitos/"+id, {withCredentials:true})
-            .then(res =>{
-                for (let i=0; i<largo; i++){
-                    if(i!==index){
-                        aNames=[...aNames,aNames2[i]];
-                        identificadores=[...identificadores,identificadores2[i]];
-                        aChecks = [...aChecks,aChecks2[i]];
-                        aId = [...aId, aId2[i]]
+            if(window.confirm("Are you sure?")===true){
+                id = arrayId[index];
+                largo = arrayId.length;
+                aNames = [];
+                identificadores = [];
+                aChecks = [];
+                aId = [];
+                aNames2 = arrayNames;
+                identificadores2 = arrayIdentificadores;
+                aChecks2 = arrayChecks;
+                aId2 = arrayId;
+                axios.delete("http://localhost:8000/api/habitos/"+id, {withCredentials:true})
+                .then(res =>{
+                    for (let i=0; i<largo; i++){
+                        if(i!==index){
+                            aNames=[...aNames,aNames2[i]];
+                            identificadores=[...identificadores,identificadores2[i]];
+                            aChecks = [...aChecks,aChecks2[i]];
+                            aId = [...aId, aId2[i]]
+                        }
+                        else{}
                     }
-                    else{}
-                }
-                setArrayNames(aNames);
-                setArrayIdentificadores(identificadores);
-                setArrayChecks(aChecks);
-                setArrayId(aId);
-            })
-            .catch(err=>console.log(err))
+                    setArrayNames(aNames);
+                    setArrayIdentificadores(identificadores);
+                    setArrayChecks(aChecks);
+                    setArrayId(aId);
+                })
+                .catch(err=>console.log(err))
+            }
+            else{
+
+            }
         }
     return(
         <div className="verlos">
